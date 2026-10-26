@@ -1,0 +1,643 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#08080d">
+<meta name="description" content="Michael — AI specialist, designer and digital creator.">
+<title>Michael — MYCO LABS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#08080d;--surface:#101018;--text:#f4f1ff;--muted:#9590a7;
+  --purple:#a78bfa;--pink:#f0abfc;--cyan:#81e6ff;
+  --border:rgba(255,255,255,.09);
+  --mono:"DM Mono",monospace;--sans:"Space Grotesk",sans-serif;
+  --max:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden}
+body.intro-active{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible{outline:2px solid var(--purple);outline-offset:4px}
+::selection{background:var(--purple);color:#08080d}
+.mono{font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.noise{position:fixed;inset:0;z-index:100;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E")}
+.ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.ambient:before,.ambient:after{content:"";position:absolute;width:480px;height:480px;border-radius:50%;filter:blur(100px);opacity:.11}
+.ambient:before{background:#7044ff;top:-280px;left:-220px}
+.ambient:after{background:#3b8bff;right:-300px;bottom:-300px}
+.gradient-text{color:transparent;background:linear-gradient(100deg,#c9b6ff,#f0abfc 60%,#81e6ff);background-clip:text;-webkit-background-clip:text}
+.live-dot{width:7px;height:7px;display:inline-block;border-radius:50%;background:#a78bfa;box-shadow:0 0 12px #a78bfa}
+.section{padding:112px 0;position:relative}
+.container{width:min(var(--max),88%);margin-inline:auto}
+.section-label{display:flex;align-items:center;gap:12px;color:var(--purple);margin-bottom:20px}
+.section-label:before{content:"";width:25px;height:1px;background:var(--purple)}
+.section-heading{font-size:clamp(34px,5vw,57px);letter-spacing:-.065em;line-height:1.06;margin:0}
+.section-description{max-width:520px;color:var(--muted);line-height:1.9;font-size:14px;margin-top:20px}
+
+/* INTRO */
+.intro{position:fixed;z-index:200;inset:0;display:grid;place-items:center;overflow:hidden;background:#07070c;transition:opacity .65s ease,visibility .65s ease}
+.intro.is-gone{opacity:0;visibility:hidden;pointer-events:none}
+#introCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.intro-grid{position:absolute;inset:0;opacity:.1;background-image:linear-gradient(rgba(167,139,250,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,.2) 1px,transparent 1px);background-size:65px 65px;mask-image:radial-gradient(ellipse,black,transparent 75%)}
+.intro-orb{position:absolute;width:min(65vw,580px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.14),transparent 68%);animation:pulse 5s ease-in-out infinite}
+.portal{position:absolute;width:min(58vw,500px);aspect-ratio:1;border:1px solid rgba(167,139,250,.2);border-radius:50%;box-shadow:0 0 65px rgba(123,92,255,.07),inset 0 0 65px rgba(123,92,255,.04);animation:spin 36s linear infinite}
+.portal:before,.portal:after{content:"";position:absolute;inset:9%;border:1px dashed rgba(167,139,250,.28);border-radius:50%}
+.portal:after{inset:22%;border-style:solid;border-color:rgba(129,230,255,.2);animation:spin 28s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{transform:scale(1.06);opacity:.7}}
+.intro-content{position:relative;z-index:2;width:min(900px,90%);text-align:center;padding:30px 0}
+.intro-topline{display:flex;justify-content:center;align-items:center;gap:10px;color:#bcb3db;margin-bottom:30px}
+.intro-kicker{color:var(--purple);margin:0 0 12px}
+.intro-title{margin:0;font-size:clamp(52px,10vw,116px);line-height:.94;letter-spacing:-.085em;font-weight:700}
+.intro-title span{display:block;color:transparent;background:linear-gradient(100deg,#fff,#c8b6ff 40%,#9b8cff 65%,#81e6ff);background-size:200% auto;background-clip:text;-webkit-background-clip:text;animation:gradientFlow 8s linear infinite}
+@keyframes gradientFlow{to{background-position:200% center}}
+.intro-subtitle{color:#aaa5bd;font-size:15px;line-height:1.8;margin:24px 0 34px}
+.intro-enter{display:inline-flex;align-items:center;justify-content:center;gap:25px;padding:17px 23px;min-width:220px;color:white;border:1px solid rgba(201,183,255,.45);border-radius:5px;background:linear-gradient(110deg,rgba(132,99,255,.2),rgba(129,230,255,.06));cursor:pointer;transition:transform .22s,border-color .22s,box-shadow .22s}
+.intro-enter:hover{transform:translateY(-2px);border-color:var(--purple);box-shadow:0 0 28px rgba(167,139,250,.15)}
+.enter-arrow{font-size:19px;transition:transform .22s}
+.intro-enter:hover .enter-arrow{transform:translateX(4px)}
+.intro-bottom{position:absolute;bottom:25px;left:0;right:0;display:flex;justify-content:space-between;padding:0 30px;color:#676378;font:9px var(--mono);letter-spacing:.1em}
+.intro.exit .intro-content{animation:exitZoom .55s ease forwards}
+.intro.exit .portal{animation:portalExpand .65s ease forwards}
+@keyframes exitZoom{to{opacity:0;transform:scale(1.06);filter:blur(4px)}}
+@keyframes portalExpand{to{transform:scale(1.7);opacity:0}}
+
+/* NAV */
+.navbar{position:fixed;z-index:50;top:0;left:0;right:0;height:74px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid transparent;transition:background .25s,border-color .25s}
+.navbar.scrolled{background:rgba(8,8,13,.88);backdrop-filter:blur(14px);border-color:var(--border)}
+.brand{display:inline-flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.04em;font-size:18px}
+.brand-mark{display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(167,139,250,.45);background:rgba(167,139,250,.08);color:var(--purple);border-radius:9px;font:13px var(--mono)}
+.nav-links{display:flex;align-items:center;gap:30px}
+.nav-links a{font-size:12px;color:#aaa6ba;transition:color .2s}
+.nav-links a:hover{color:white}
+.nav-right{display:flex;align-items:center;gap:12px}
+.sound-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:7px;background:rgba(255,255,255,.025);color:#aaa6ba;padding:9px 11px;font:9px var(--mono);cursor:pointer;transition:border-color .2s,color .2s}
+.sound-toggle:hover{color:white;border-color:#75649e}
+.sound-bars{display:flex;align-items:center;gap:2px;height:12px}
+.sound-bars i{display:block;width:2px;height:4px;background:var(--purple);border-radius:2px}
+.sound-toggle.enabled .sound-bars i{animation:bars .7s ease-in-out infinite alternate}
+.sound-bars i:nth-child(2){animation-delay:.16s}.sound-bars i:nth-child(3){animation-delay:.32s}
+@keyframes bars{to{height:11px}}
+.nav-contact{padding:10px 15px;border:1px solid rgba(167,139,250,.4);border-radius:7px;font-size:12px;transition:background .2s}
+.nav-contact:hover{background:rgba(167,139,250,.13)}
+
+/* HOME — CENTRED */
+.hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 90px;position:relative}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.45}
+.hero-inner{position:relative;z-index:1;width:min(1050px,90%);margin-inline:auto;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:40px}
+.hero-copy-block{padding-left:clamp(0px,2.5vw,28px)}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;color:#b6b0ca;margin-bottom:25px}
+.hero h1{font-size:clamp(62px,8vw,98px);line-height:.91;letter-spacing:-.085em;margin:0;font-weight:700}
+.hero h1 .line-two{display:block;margin-top:12px}
+.hero-role{margin-top:27px;font-size:clamp(15px,2vw,19px);color:#c2bdd2}
+.hero-role span{color:var(--purple)}
+.hero-description{max-width:465px;color:var(--muted);font-size:14px;line-height:1.9;margin:17px 0 27px}
+.hero-actions{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.primary-button{display:inline-flex;align-items:center;gap:22px;padding:15px 19px;border:1px solid rgba(167,139,250,.4);border-radius:7px;background:linear-gradient(110deg,rgba(167,139,250,.19),rgba(129,230,255,.05));font-size:11px;transition:transform .2s,border-color .2s,background .2s}
+.primary-button:hover{transform:translateY(-2px);border-color:var(--purple);background:rgba(167,139,250,.15)}
+.text-button{display:inline-flex;gap:8px;align-items:center;color:#aaa5bb;font-size:12px;transition:color .2s}
+.text-button:hover{color:white}
+.hero-meta{display:flex;gap:30px;margin-top:43px;padding-top:20px;border-top:1px solid var(--border)}
+.meta-value{display:block;font-size:23px;letter-spacing:-.05em;font-weight:600}
+.meta-label{display:block;margin-top:7px;font:9px var(--mono);color:#777287;letter-spacing:.08em;text-transform:uppercase}
+.hero-art{position:relative;display:grid;place-items:center;min-height:390px}
+.hero-art-glow{position:absolute;width:270px;height:270px;border-radius:50%;background:rgba(123,92,255,.13);filter:blur(70px)}
+.hero-emblem{width:min(320px,100%);aspect-ratio:1;position:relative;display:grid;place-items:center;animation:emblemFloat 8s ease-in-out infinite}
+@keyframes emblemFloat{50%{transform:translateY(-8px)}}
+.emblem-ring{position:absolute;inset:6%;border-radius:50%;border:1px solid rgba(167,139,250,.28);box-shadow:0 0 35px rgba(167,139,250,.05),inset 0 0 30px rgba(167,139,250,.04)}
+.emblem-ring.ring-two{inset:17%;border-style:dashed;border-color:rgba(129,230,255,.3);animation:spin 50s linear infinite}
+.emblem-ring.ring-three{inset:28%;border-color:rgba(240,171,252,.35)}
+.emblem-core{width:39%;aspect-ratio:1;display:grid;place-items:center;border-radius:26%;background:linear-gradient(145deg,#c7b5ff,#7660d9 55%,#4d8db7);color:#0a0812;font-size:58px;font-weight:700;letter-spacing:-.12em;padding-right:7px;box-shadow:0 0 45px rgba(167,139,250,.2),inset 0 1px rgba(255,255,255,.6);transform:rotate(-8deg)}
+.orbit-dot{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 15px var(--cyan)}
+.orbit-dot.one{top:18%;left:25%}.orbit-dot.two{right:14%;top:43%;background:var(--pink);box-shadow:0 0 15px var(--pink)}.orbit-dot.three{bottom:17%;left:34%;width:5px;height:5px}
+.art-caption{position:absolute;bottom:0;right:2%;font:9px var(--mono);color:#79748c;letter-spacing:.12em}
+.scroll-hint{position:absolute;bottom:24px;left:6%;display:flex;align-items:center;gap:12px;color:#777287;font:9px var(--mono);letter-spacing:.1em}
+.scroll-line{width:30px;height:1px;background:#777287}
+
+/* PROJECTS */
+.projects-section{border-top:1px solid var(--border);background:linear-gradient(180deg,rgba(255,255,255,.012),transparent 35%)}
+.section-top{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:45px}
+.projects-total{font:10px var(--mono);color:#777287;padding-bottom:6px;white-space:nowrap}
+.projects-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.project-card{min-width:0;position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.009));transition:border-color .25s,transform .25s,background .25s}
+.project-card:hover{border-color:rgba(167,139,250,.4);background:linear-gradient(145deg,rgba(167,139,250,.06),rgba(255,255,255,.01));transform:translateY(-4px)}
+.project-art{height:205px;position:relative;display:grid;place-items:center;overflow:hidden;border-bottom:1px solid var(--border);background:radial-gradient(ellipse at 50% 60%,var(--art-glow),transparent 65%),#0d0d15}
+.project-art:before{content:"";position:absolute;inset:0;opacity:.2;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:25px 25px;mask-image:radial-gradient(ellipse,black,transparent 85%)}
+.project-index,.project-type{position:absolute;top:15px;color:#858097;font:9px var(--mono);z-index:2}
+.project-index{left:16px}.project-type{right:15px}
+.project-symbol{position:relative;z-index:1;display:grid;place-items:center;width:108px;height:108px;border:1px solid var(--symbol-border);border-radius:28px;background:var(--symbol-bg);color:var(--symbol-color);font-size:46px;font-weight:700;letter-spacing:-.09em;box-shadow:0 0 45px var(--art-glow);transform:rotate(-7deg);transition:transform .25s}
+.project-card:hover .project-symbol{transform:rotate(0) scale(1.04)}
+.project-info{padding:21px}
+.project-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.project-title{font-size:21px;letter-spacing:-.055em;margin:0}
+.project-arrow{display:grid;place-items:center;width:30px;height:30px;flex-shrink:0;border:1px solid var(--border);border-radius:50%;color:#aaa5bb;transition:transform .2s,color .2s,background .2s}
+.project-card:hover .project-arrow{transform:rotate(45deg);color:white;background:rgba(167,139,250,.15)}
+.project-description{color:var(--muted);font-size:12px;line-height:1.8;min-height:44px;margin:13px 0 18px}
+.project-tags{display:flex;flex-wrap:wrap;gap:7px}
+.project-tag{font:9px var(--mono);color:#aaa5bb;border:1px solid var(--border);border-radius:4px;padding:6px 8px}
+.project-open{position:absolute;inset:0;z-index:3;border-radius:inherit}
+
+/* ABOUT */
+.about-section{border-top:1px solid var(--border)}
+.about-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:80px;align-items:start}
+.about-heading{position:sticky;top:110px}
+.about-copy{color:#aaa5bb;font-size:14px;line-height:2;margin:0 0 19px}
+.about-copy strong{color:#f0ecff;font-weight:500}
+.skills{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px}
+.skill{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:6px;color:#bcb7ce;font-size:11px;background:rgba(255,255,255,.018)}
+.skill:before{content:"";width:5px;height:5px;background:var(--purple);border-radius:50%;box-shadow:0 0 8px rgba(167,139,250,.4)}
+.about-note{border-left:1px solid var(--purple);padding:4px 0 4px 18px;margin-top:32px;color:#8d87a3;font:10px/1.9 var(--mono)}
+
+/* CONTACT */
+.contact-section{padding:75px 0 115px}
+.contact-panel{position:relative;overflow:hidden;padding:clamp(32px,6vw,70px);border:1px solid rgba(167,139,250,.25);border-radius:16px;background:radial-gradient(ellipse at 85% 10%,rgba(115,83,255,.15),transparent 45%),radial-gradient(ellipse at 0% 100%,rgba(129,230,255,.06),transparent 40%),#0d0d15}
+.contact-panel:before{content:"";position:absolute;top:-180px;right:-110px;width:360px;height:360px;border-radius:50%;border:1px solid rgba(167,139,250,.12);box-shadow:0 0 0 35px rgba(167,139,250,.025),0 0 0 75px rgba(167,139,250,.02);pointer-events:none}
+.contact-content{position:relative;z-index:1}
+.contact-heading{font-size:clamp(43px,7vw,76px);letter-spacing:-.075em;line-height:.98;margin:0;max-width:750px}
+.contact-description{color:var(--muted);line-height:1.9;font-size:14px;max-width:490px;margin:22px 0 28px}
+.discord-contact{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0;color:#9e99b0;font-size:12px}
+.discord-status-dot{width:7px;height:7px;background:#8bdfb3;border-radius:50%;box-shadow:0 0 9px rgba(139,223,179,.4)}
+.discord-username{border:0;padding:0;background:transparent;color:#d6c9ff;cursor:pointer;font:12px var(--mono);transition:color .2s}
+.discord-username:hover{color:white}
+#copyFeedback{color:#8bdfb3;font:10px var(--mono)}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--border);padding:24px 0}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.footer-copy{color:#716c83;font:9px/1.8 var(--mono)}
+.back-top{color:#a19bb5;font:10px var(--mono);transition:color .2s}
+.back-top:hover{color:white}
+
+/* REVEALS */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.project-card.reveal:nth-child(2){transition-delay:.07s}
+.project-card.reveal:nth-child(3){transition-delay:.14s}
+
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr .75fr;gap:22px}
+  .hero-art{min-height:320px}
+  .about-grid{gap:42px}
+  .projects-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .project-card:last-child{grid-column:1/-1}
+  .project-card:last-child .project-art{height:185px}
+  .nav-links{gap:17px}
+}
+@media(max-width:650px){
+  .navbar{height:66px;padding:0 5%}
+  .brand{font-size:15px}
+  .nav-links{display:none}
+  .sound-toggle{padding:8px}
+  .nav-contact{padding:9px 10px;font-size:11px}
+  .container{width:90%}
+  .section{padding:82px 0}
+  .hero{padding:115px 0 70px;min-height:auto}
+  .hero-inner{width:90%;grid-template-columns:1fr;gap:15px}
+  .hero-copy-block{padding-left:0}
+  .hero h1{font-size:clamp(60px,15vw,88px)}
+  .hero-art{min-height:280px;margin-top:5px}
+  .hero-emblem{width:260px}
+  .art-caption{right:4%}
+  .hero-meta{gap:22px;margin-top:32px}
+  .scroll-hint{display:none}
+  .section-top{align-items:flex-start;flex-direction:column;margin-bottom:30px}
+  .projects-grid{grid-template-columns:1fr;gap:15px}
+  .project-card:last-child{grid-column:auto}
+  .project-art,.project-card:last-child .project-art{height:205px}
+  .project-description{min-height:0}
+  .about-grid{grid-template-columns:1fr;gap:30px}
+  .about-heading{position:static}
+  .contact-section{padding:50px 0 80px}
+  .contact-panel{padding:30px 23px}
+  .footer-inner{align-items:flex-start;flex-direction:column}
+  .intro-bottom{padding:0 14px;font-size:8px}
+  .portal{width:100vw}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+
+<body class="intro-active">
+<div class="noise"></div>
+<div class="ambient"></div>
+
+<section class="intro" id="intro" aria-label="Welcome screen">
+  <canvas id="introCanvas"></canvas>
+  <div class="intro-grid"></div>
+  <div class="intro-orb"></div>
+  <div class="portal"></div>
+  <div class="intro-content">
+    <div class="intro-topline mono"><span class="live-dot"></span> PERSONAL DIGITAL UNIVERSE</div>
+    <p class="intro-kicker mono">WELCOME TO</p>
+    <h1 class="intro-title"><span>MY WORLD.</span></h1>
+    <p class="intro-subtitle">Ideas become projects.<br>Curiosity becomes creation.</p>
+    <button class="intro-enter mono" id="enterButton" type="button">
+      <span>ENTER MY WORLD</span><span class="enter-arrow">↗</span>
+    </button>
+  </div>
+  <div class="intro-bottom"><span>MICHAEL / DIGITAL CREATOR</span><span>DESIGNED TO EXPLORE · 2026</span></div>
+</section>
+
+<header class="navbar" id="navbar">
+  <a class="brand" href="#home" aria-label="Michael home">
+    <span class="brand-mark">M.</span><span>MYCO <span style="color:var(--purple)">LABS</span></span>
+  </a>
+  <nav class="nav-links" aria-label="Main navigation">
+    <a href="#home">Home</a><a href="#projects">Projects</a><a href="#about">About</a><a href="#contact">Contact</a>
+  </nav>
+  <div class="nav-right">
+    <button class="sound-toggle enabled" id="soundToggle" type="button" aria-pressed="true">
+      <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="soundLabel">SOUND ON</span>
+    </button>
+    <a class="nav-contact" href="#contact">Let's talk ↗</a>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="home">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-inner">
+    <div class="hero-copy-block">
+      <div class="hero-eyebrow mono reveal"><span class="live-dot"></span> INDEPENDENT DIGITAL CREATOR</div>
+      <h1 class="reveal">Hey, I'm <span class="line-two gradient-text">Michael.</span></h1>
+      <p class="hero-role reveal">AI Specialist <span>/</span> Designer <span>/</span> Builder</p>
+      <p class="hero-description reveal">I turn ideas into interactive experiences. From AI-powered tools to games and creative experiments, this is where I bring my ideas to life.</p>
+      <div class="hero-actions reveal">
+        <a class="primary-button" href="#projects">EXPLORE MY WORK <span>↘</span></a>
+        <a class="text-button" href="#about">A little about me <span>→</span></a>
+      </div>
+      <div class="hero-meta reveal">
+        <div><span class="meta-value" id="projectCount">03<span style="color:var(--purple)">+</span></span><span class="meta-label">Projects created</span></div>
+        <div><span class="meta-value">∞</span><span class="meta-label">Ideas to explore</span></div>
+        <div><span class="meta-value">01</span><span class="meta-label">Mind behind it</span></div>
+      </div>
+    </div>
+    <div class="hero-art reveal" aria-label="Animated M emblem">
+      <div class="hero-art-glow"></div>
+      <div class="hero-emblem">
+        <div class="emblem-ring"></div><div class="emblem-ring ring-two"></div><div class="emblem-ring ring-three"></div>
+        <div class="orbit-dot one"></div><div class="orbit-dot two"></div><div class="orbit-dot three"></div>
+        <div class="emblem-core">M.</div>
+      </div>
+      <div class="art-caption">CREATIVITY / IN PROGRESS</div>
+    </div>
+  </div>
+  <div class="scroll-hint"><span class="scroll-line"></span> SCROLL TO EXPLORE</div>
+</section>
+
+<section class="section projects-section" id="projects">
+  <div class="container">
+    <div class="section-top reveal">
+      <div>
+        <div class="section-label mono">01 / SELECTED WORK</div>
+        <h2 class="section-heading">Things I've <span class="gradient-text">built.</span></h2>
+        <p class="section-description">A collection of projects, experiments and ideas I've brought to life. Each one starts with a question and ends with something you can explore.</p>
+      </div>
+      <div class="projects-total"><span id="projectsTotal">03</span> PROJECTS</div>
+    </div>
+
+    <div class="projects-grid" id="projectsGrid">
+      <article class="project-card reveal" style="--art-glow:rgba(167,139,250,.2);--symbol-color:#c7b5ff;--symbol-border:rgba(167,139,250,.5);--symbol-bg:linear-gradient(145deg,rgba(167,139,250,.24),rgba(167,139,250,.04))">
+        <div class="project-art"><span class="project-index">PROJECT / 01</span><span class="project-type">WEB APP</span><div class="project-symbol">?</div></div>
+        <div class="project-info">
+          <div class="project-title-row"><h3 class="project-title">Worth It?</h3><span class="project-arrow">↗</span></div>
+          <p class="project-description">A smarter way to think through purchases, compare options and decide whether something is really worth it.</p>
+          <div class="project-tags"><span class="project-tag">PRODUCTIVITY</span><span class="project-tag">WEB APP</span></div>
+        </div>
+        <a class="project-open" href="https://memycol.github.io/worthit/" target="_blank" rel="noopener noreferrer" aria-label="Open Worth It?"></a>
+      </article>
+
+      <article class="project-card reveal" style="--art-glow:rgba(129,230,255,.17);--symbol-color:#81e6ff;--symbol-border:rgba(129,230,255,.4);--symbol-bg:linear-gradient(145deg,rgba(129,230,255,.19),rgba(129,230,255,.035))">
+        <div class="project-art"><span class="project-index">PROJECT / 02</span><span class="project-type">GAME</span><div class="project-symbol">✳</div></div>
+        <div class="project-info">
+          <div class="project-title-row"><h3 class="project-title">Skystrike</h3><span class="project-arrow">↗</span></div>
+          <p class="project-description">A game project built around action, progression and an experience designed to keep players engaged.</p>
+          <div class="project-tags"><span class="project-tag">GAMING</span><span class="project-tag">INTERACTIVE</span></div>
+        </div>
+        <a class="project-open" href="https://memycol.github.io/skystrike/" target="_blank" rel="noopener noreferrer" aria-label="Open Skystrike"></a>
+      </article>
+
+      <article class="project-card reveal" style="--art-glow:rgba(240,171,252,.17);--symbol-color:#f0abfc;--symbol-border:rgba(240,171,252,.4);--symbol-bg:linear-gradient(145deg,rgba(240,171,252,.2),rgba(240,171,252,.035))">
+        <div class="project-art"><span class="project-index">PROJECT / 03</span><span class="project-type">CREATIVE TOOL</span><div class="project-symbol">⌂</div></div>
+        <div class="project-info">
+          <div class="project-title-row"><h3 class="project-title">RoomSketch</h3><span class="project-arrow">↗</span></div>
+          <p class="project-description">A creative space for exploring room layouts and turning interior ideas into something more tangible.</p>
+          <div class="project-tags"><span class="project-tag">DESIGN</span><span class="project-tag">CREATIVE TOOL</span></div>
+        </div>
+        <a class="project-open" href="https://memycol.github.io/roomsketch/" target="_blank" rel="noopener noreferrer" aria-label="Open RoomSketch"></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section about-section" id="about">
+  <div class="container about-grid">
+    <div class="about-heading reveal">
+      <div class="section-label mono">02 / THE PERSON</div>
+      <h2 class="section-heading">Curious by<br>nature. <span class="gradient-text">Builder</span><br>by choice.</h2>
+    </div>
+    <div class="reveal">
+      <p class="about-copy">Hey, I'm <strong>Michael</strong> — an independent creator interested in the intersection of technology, design and creativity.</p>
+      <p class="about-copy">I enjoy experimenting with AI, building websites, designing interfaces and developing interactive projects. I like taking an idea that starts in my head and turning it into something real that people can use.</p>
+      <p class="about-copy">This portfolio is my little corner of the internet: a place to share what I'm making, try new things and keep improving with every project.</p>
+      <div class="skills">
+        <span class="skill">AI & Automation</span><span class="skill">Web Development</span><span class="skill">UI / UX Design</span><span class="skill">Creative Experiments</span><span class="skill">Game Development</span>
+      </div>
+      <div class="about-note">CURRENT STATUS: ALWAYS BUILDING SOMETHING<br>NEXT IDEA: STILL LOADING...</div>
+    </div>
+  </div>
+</section>
+
+<section class="section contact-section" id="contact">
+  <div class="container">
+    <div class="contact-panel reveal">
+      <div class="contact-content">
+        <div class="section-label mono">03 / GET IN TOUCH</div>
+        <h2 class="contact-heading">Have an idea?<br><span class="gradient-text">Let's make it real.</span></h2>
+        <p class="contact-description">Got a project in mind, want to collaborate, or just want to chat? Feel free to reach out. I'm always open to interesting ideas.</p>
+        <p class="discord-contact">
+          <span class="discord-status-dot"></span>
+          Find me on Discord:
+          <button id="copyDiscord" type="button" class="discord-username">@memycol ⧉</button>
+          <span id="copyFeedback" aria-live="polite"></span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-copy">© <span id="year"></span> MICHAEL / MYCO LABS<br>BUILT WITH CURIOSITY.</div>
+    <a class="back-top" href="#home">BACK TO TOP ↑</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s, root = document) => root.querySelector(s);
+  const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Sound starts enabled. Browsers may require the first user gesture
+  // before synthesized sounds can play.
+  let soundEnabled = true;
+  let audioContext = null;
+
+  function getAudio() {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return null;
+    if (!audioContext) audioContext = new AudioCtx();
+    if (audioContext.state === "suspended") audioContext.resume().catch(() => {});
+    return audioContext;
+  }
+
+  function tone(freq, endFreq, duration, volume, delay = 0, type = "sine") {
+    if (!soundEnabled) return;
+    const ctx = getAudio();
+    if (!ctx) return;
+    const start = ctx.currentTime + delay;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, start);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(1, endFreq), start + duration);
+    gain.gain.setValueAtTime(.0001, start);
+    gain.gain.exponentialRampToValueAtTime(volume, start + .012);
+    gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + duration + .02);
+  }
+
+  function clickSound() {
+    tone(420, 320, .055, .018, 0, "triangle");
+  }
+
+  function hoverSound() {
+    tone(650, 760, .035, .007);
+  }
+
+  function enterSound() {
+    tone(160, 380, .28, .035);
+    tone(350, 700, .32, .018, .06);
+    tone(650, 850, .2, .009, .12, "triangle");
+  }
+
+  const soundToggle = $("#soundToggle");
+  const soundLabel = $("#soundLabel");
+
+  soundToggle.addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    soundToggle.classList.toggle("enabled", soundEnabled);
+    soundToggle.setAttribute("aria-pressed", String(soundEnabled));
+    soundLabel.textContent = soundEnabled ? "SOUND ON" : "SOUND OFF";
+    if (soundEnabled) {
+      getAudio();
+      tone(520, 680, .07, .018);
+    }
+  });
+
+  // Keep hover sounds subtle and avoid expensive work on pointer movement.
+  const soundTargets = $$("a, button");
+  soundTargets.forEach(el => {
+    el.addEventListener("pointerenter", hoverSound, { passive: true });
+    if (el !== soundToggle && el.id !== "enterButton") {
+      el.addEventListener("click", clickSound);
+    }
+  });
+
+  // Opening screen
+  const intro = $("#intro");
+  const enterButton = $("#enterButton");
+  let introFinished = false;
+
+  function enterSite() {
+    if (introFinished) return;
+    introFinished = true;
+    enterSound();
+    intro.classList.add("exit");
+    setTimeout(() => {
+      intro.classList.add("is-gone");
+      document.body.classList.remove("intro-active");
+      intro.setAttribute("aria-hidden", "true");
+      refreshReveals();
+    }, 480);
+  }
+
+  enterButton.addEventListener("click", () => {
+    // This user gesture unlocks audio in browsers that block autoplay.
+    getAudio();
+    enterSite();
+  });
+
+  // Keep the intro on the first visit of each browser session.
+  try {
+    if (sessionStorage.getItem("mycoIntroSeen") === "1") {
+      introFinished = true;
+      intro.classList.add("is-gone");
+      document.body.classList.remove("intro-active");
+      intro.setAttribute("aria-hidden", "true");
+    } else {
+      sessionStorage.setItem("mycoIntroSeen", "1");
+    }
+  } catch (_) {}
+
+  // Lightweight canvas particles: no shadows, gradients per particle, or
+  // continuous animation when the page is hidden.
+  function particleCanvas(canvas, count) {
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let width = 0, height = 0, particles = [], raf = 0, frame = 0;
+    let visible = !document.hidden;
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(devicePixelRatio || 1, 1.5);
+      width = rect.width;
+      height = rect.height;
+      canvas.width = Math.max(1, Math.floor(width * dpr));
+      canvas.height = Math.max(1, Math.floor(height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      particles = Array.from({length: count}, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 1.1 + .35,
+        a: Math.random() * .45 + .12,
+        speed: Math.random() * .18 + .035
+      }));
+      draw();
+    }
+
+    function draw() {
+      cancelAnimationFrame(raf);
+      ctx.clearRect(0, 0, width, height);
+      for (const p of particles) {
+        ctx.globalAlpha = p.a;
+        ctx.fillStyle = "#c9b6ff";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        if (!reducedMotion && visible) {
+          p.y -= p.speed;
+          if (p.y < -3) {
+            p.y = height + 3;
+            p.x = Math.random() * width;
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+      frame++;
+      if (!reducedMotion && visible) raf = requestAnimationFrame(draw);
+    }
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
+    resize();
+
+    document.addEventListener("visibilitychange", () => {
+      visible = !document.hidden;
+      if (visible) draw();
+      else cancelAnimationFrame(raf);
+    });
+  }
+
+  particleCanvas($("#introCanvas"), 70);
+  particleCanvas($("#heroCanvas"), 42);
+
+  // Navbar
+  const navbar = $("#navbar");
+  let scrollTicking = false;
+  window.addEventListener("scroll", () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => {
+      navbar.classList.toggle("scrolled", window.scrollY > 25);
+      scrollTicking = false;
+    });
+  }, {passive:true});
+
+  // Reveal on scroll
+  const revealElements = $$(".reveal");
+  const revealObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
+      }
+    }
+  }, {threshold:.08});
+
+  function refreshReveals() {
+    revealElements.forEach(el => revealObserver.observe(el));
+  }
+  refreshReveals();
+
+  // Project count updates automatically when cards are added.
+  const count = String($$(".project-card").length).padStart(2, "0");
+  $("#projectsTotal").textContent = count;
+  $("#projectCount").innerHTML = `${count}<span style="color:var(--purple)">+</span>`;
+
+  // Copy Discord username
+  const feedback = $("#copyFeedback");
+  let feedbackTimer;
+
+  async function copyDiscord() {
+    const username = "memycol";
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(username);
+        feedback.textContent = "COPIED!";
+      } else {
+        const area = document.createElement("textarea");
+        area.value = username;
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        const success = document.execCommand("copy");
+        area.remove();
+        feedback.textContent = success ? "COPIED!" : "Discord: " + username;
+      }
+    } catch (_) {
+      feedback.textContent = "Discord: " + username;
+    }
+    clearTimeout(feedbackTimer);
+    feedbackTimer = setTimeout(() => feedback.textContent = "", 2200);
+  }
+
+  $("#copyDiscord").addEventListener("click", copyDiscord);
+  $("#year").textContent = new Date().getFullYear();
+
+  // Keep motion restrained: no continuous card tilt that can feel jittery.
+  if (!reducedMotion) {
+    $$(".project-card").forEach(card => {
+      card.addEventListener("pointerenter", () => {
+        card.style.willChange = "transform";
+      });
+      card.addEventListener("pointerleave", () => {
+        card.style.willChange = "auto";
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>
